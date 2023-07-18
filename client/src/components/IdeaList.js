@@ -23,12 +23,16 @@ class IdeaList {
         try {
             const res = await this._ideasAPI.getIdeas();
             this._ideas = res.data.data;
-            console.log(this._ideas);
             this.render();
 
         } catch (error) {
             console.log(error);
         }
+    }
+
+    addIdeatoList(idea) {
+        this._ideas.push(idea);
+        this.render();
     }
 
     getTagClass(tag) {

@@ -1,30 +1,46 @@
+import IdeasAPI from "../services/ideasAPI";
+import IdeaList from "./IdeaList";
+
 class IdeaForm {
     constructor () {
         this._formModal = document.getElementById('form-modal')
         this.render();
+        this._ideaList = new IdeaList();
     }
 
     eventListeners() {
         this._form.addEventListener('submit', this.handleSubmit.bind(this));
     }
 
-    handleSubmit(e) {
+    async handleSubmit(e) {
         e.preventDefault();
-
+    
         const idea = {
-           username: this._form.elements.username.value,
-           text: this._form.elements.text.value,
-           tag: this._form.elements.tag.value
+          username: this._form.elements.username.value,
+          text: this._form.elements.text.value,
+          tag: this._form.elements.tag.value,
+        };
+    
+        // Create an instance of IdeasAPI
+        const ideasAPI = new IdeasAPI();
+    
+        try {
+          // Call the createIdea method on the instance, not on the class itself
+          const newIdea = await ideasAPI.createIdea(idea);
+    
+          // add idea to list
+          this._ideaList.addIdeatoList(newIdea.data.data);
+    
+          // clear form inputs
+          this._form.elements.username.value = '';
+          this._form.elements.text.value = '';
+          this._form.elements.tag.value = '';
+    
+          document.dispatchEvent(new Event('closeForm'));
+        } catch (error) {
+          console.log("Error while creating idea:", error);
         }
-
-        console.log(idea);
-
-        this._form.elements.username.value = '';
-        this._form.elements.text.value = '';
-        this._form.elements.tag.value = '';
-
-        document.dispatchEvent( new Event('closeForm'));
-    }
+      }
 
     render() {
         this._formModal.innerHTML = `
