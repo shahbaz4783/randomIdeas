@@ -1,57 +1,83 @@
-import IdeasAPI from "../services/ideasAPI";
+import IdeasAPI from '../services/ideasAPI';
 
 class IdeaList {
-    constructor () {
-        this._ideaListEl = document.getElementById('idea-list');
-        this._ideas = [];
+	constructor() {
+		this._ideaListEl = document.getElementById('idea-list');
+		this._ideas = [];
 
-        this._ideasAPI = new IdeasAPI();
+		this._ideasAPI = new IdeasAPI();
 
-        this.getIdeas();
+		this.getIdeas();
 
-        this._validTags = new Set();
-        this._validTags.add('technology');
-        this._validTags.add('software');
-        this._validTags.add('business');
-        this._validTags.add('inventions');
-        this._validTags.add('health');
-        this._validTags.add('education');
+		this._validTags = new Set();
+		this._validTags.add('technology');
+		this._validTags.add('software');
+		this._validTags.add('business');
+		this._validTags.add('inventions');
+		this._validTags.add('health');
+		this._validTags.add('education');
+	}
 
-    }
-    
-    async getIdeas() {
-        try {
-            const res = await this._ideasAPI.getIdeas();
-            this._ideas = res.data.data;
-            this.render();
+	eventListeners() {
+		this._ideaListEl.addEventListener('click', (e) => {
+			if (e.target.classList.contains('fa-times')) {
+				e.stopImmediatePropagation();
+				const ideaID = e.target.parentElement.parentElement.dataset.id;
+				this.deleteIdea(ideaID);
+			}
+		});
+	}
 
-        } catch (error) {
-            console.log(error);
-        }
-    }
+	async getIdeas() {
+		try {
+			const res = await this._ideasAPI.getIdeas();
+			this._ideas = res.data.data;
+			this.render();
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
-    addIdeatoList(idea) {
-        this._ideas.push(idea);
-        this.render();
-    }
+	async deleteIdea(ideaID) {
+		try {
+			await this._ideasAPI.deleteIdea(ideaID);
 
-    getTagClass(tag) {
-        tag = tag.toLowerCase();
-        let tagClass = '';
-        if (this._validTags.has(tag)) {
-            tagClass = `tag-${tag}`
-        } else {
-            tagClass = '';
-        }
-        return tagClass;
-    }
+			this._ideas = this._ideas.filter((idea) => idea._id !== ideaID);
 
-    render() {
-        this._ideaListEl.innerHTML = this._ideas.map((idea) => {
-            const tagClass = this.getTagClass(idea.tag);
-            return `
-            <div class="card">
-          <button class="delete"><i class="fas fa-times"></i></button>
+			this.getIdeas();
+		} catch (error) {
+			alert('You are not allowed to delete this post');
+			console.log(error);
+		}
+	}
+
+	addIdeatoList(idea) {
+		this._ideas.push(idea);
+		this.render();
+	}
+
+	getTagClass(tag) {
+		tag = tag.toLowerCase();
+		let tagClass = '';
+		if (this._validTags.has(tag)) {
+			tagClass = `tag-${tag}`;
+		} else {
+			tagClass = '';
+		}
+		return tagClass;
+	}
+
+	render() {
+		this._ideaListEl.innerHTML = this._ideas
+			.map((idea) => {
+				const tagClass = this.getTagClass(idea.tag);
+				const deleteBtn =
+					idea.username === localStorage.getItem('username')
+						? `<button class="delete"><i class="fas fa-times"></i></button>`
+						: '';
+				return `
+            <div class="card" data-id="${idea._id}">
+          ${deleteBtn}
           <h3>
             ${idea.text}
           </h3>
@@ -62,8 +88,11 @@ class IdeaList {
           </p>
         </div>
             `;
-        }).join('');
-    }
+			})
+			.join('');
+
+		this.eventListeners();
+	}
 }
 
 export default IdeaList;
