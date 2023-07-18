@@ -1,6 +1,14 @@
+import IdeasAPI from "../services/ideasAPI";
+
 class IdeaList {
     constructor () {
         this._ideaListEl = document.getElementById('idea-list');
+        this._ideas = [];
+
+        this._ideasAPI = new IdeasAPI();
+
+        this.getIdeas();
+
         this._validTags = new Set();
         this._validTags.add('technology');
         this._validTags.add('software');
@@ -9,31 +17,18 @@ class IdeaList {
         this._validTags.add('health');
         this._validTags.add('education');
 
+    }
+    
+    async getIdeas() {
+        try {
+            const res = await this._ideasAPI.getIdeas();
+            this._ideas = res.data.data;
+            console.log(this._ideas);
+            this.render();
 
-        this._ideas = [
-            {
-                id: 1,
-                text: 'The magic of technology lies in its ability to turn science fiction into reality.',
-                tag: 'technology',
-                username: 'mark',
-                date: '21-04-2021'
-            },
-            {
-                id: 1,
-                text: 'Business is a canvas, and visionary leaders paint the picture of a better tomorrow.',
-                tag: 'business',
-                username: 'henry',
-                date: '13-07-2022'
-            },
-            {
-                id: 1,
-                text: 'Health is a lifelong partnership between our choices and our well-being.',
-                tag: 'health',
-                username: 'jos',
-                date: '06-03-2023'
-            },
-        ];
-        this.render();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     getTagClass(tag) {
@@ -66,6 +61,5 @@ class IdeaList {
         }).join('');
     }
 }
-
 
 export default IdeaList;
