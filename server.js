@@ -17,12 +17,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // cors middleware
-app.use(
-	cors({
-		origin: ['http://localhost:8000', 'http://localhost:3000'],
-		credentials: true,
-	})
-);
+// API are served from the same origin
+if (process.env.NODE_ENV !== "production") {
+    const cors = require("cors");
+      app.use(
+        cors({
+          origin: ["http://localhost:8000", "http://localhost:3000"],
+          credentials: true,
+        })
+      );
+    }
 
 app.get('/', (req, res) => {
 	res.json({ message: 'Welcome to Random Ideas API' });
