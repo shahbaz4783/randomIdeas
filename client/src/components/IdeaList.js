@@ -27,13 +27,13 @@ class IdeaList {
 			}
 		});
 
-        this._ideaListEl.addEventListener('dblclick', (e) => {
-            if (e.target.classList.contains('idea-text')){
-                e.stopImmediatePropagation();
-				const ideaID = e.target.parentElement.dataset.id;
-				this.editIdea(ideaID);
-            }
-        });
+        // this._ideaListEl.addEventListener('dblclick', (e) => {
+        //     if (e.target.classList.contains('idea-text')){
+        //         e.stopImmediatePropagation();
+		// 		const ideaID = e.target.parentElement.dataset.id;
+		// 		this.editIdea(ideaID);
+        //     }
+        // });
 	}
 
 	async getIdeas() {
@@ -59,65 +59,64 @@ class IdeaList {
 		}
 	}
 
-    async editIdea(ideaID) {
-        try {
-          const ideaToEdit = this._ideas.find((idea) => idea._id === ideaID);
+    // async editIdea(ideaID) {
+    //     try {
+    //       const ideaToEdit = this._ideas.find((idea) => idea._id === ideaID);
       
-          if (!ideaToEdit) {
-            console.log('Idea not found for editing');
-            return;
-          }
+    //       if (!ideaToEdit) {
+    //         console.log('Idea not found for editing');
+    //         return;
+    //       }
       
-          const editForm = document.createElement('form');
-          editForm.innerHTML = `
-            <div class="form-control">
-              <label for="edit-idea-text">Edit Your Idea</label>
-              <textarea name="edit-idea-text" id="edit-idea-text">${ideaToEdit.text}</textarea>
-            </div>
-            <div class="form-control">
-              <label for="edit-tag">Edit Tag</label>
-              <input type="text" name="edit-tag" id="edit-tag" value="${ideaToEdit.tag}" />
-            </div>
-            <button class="btn" type="submit" id="submit-edit">Save</button>
-          `;
+    //       const editForm = document.createElement('form');
+    //       editForm.innerHTML = `
+    //         <div class="form-control">
+    //           <label for="edit-idea-text">Edit Your Idea</label>
+    //           <textarea name="edit-idea-text" id="edit-idea-text">${ideaToEdit.text}</textarea>
+    //         </div>
+    //         <div class="form-control">
+    //           <label for="edit-tag">Edit Tag</label>
+    //           <input type="text" name="edit-tag" id="edit-tag" value="${ideaToEdit.tag}" />
+    //         </div>
+    //         <button class="btn" type="submit" id="submit-edit">Save</button>
+    //       `;
       
-          const ideaTextElement = this._ideaListEl.querySelector(
-            `[data-id="${ideaID}"] .idea-text`
-          );
-          ideaTextElement.innerHTML = '';
-          ideaTextElement.appendChild(editForm);
+    //       const ideaTextElement = this._ideaListEl.querySelector(
+    //         `[data-id="${ideaID}"] .idea-text`
+    //       );
+    //       ideaTextElement.innerHTML = '';
+    //       ideaTextElement.appendChild(editForm);
       
-          editForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+    //       editForm.addEventListener('submit', async (e) => {
+    //         e.preventDefault();
       
-            const editedIdea = {
-              text: editForm.elements['edit-idea-text'].value,
-              tag: editForm.elements['edit-tag'].value,
-              username: localStorage.getItem('username'),
-            };
+    //         const editedIdea = {
+    //           text: editForm.elements['edit-idea-text'].value,
+    //           tag: editForm.elements['edit-tag'].value,
+    //           username: localStorage.getItem('username'),
+    //         };
       
-            try {
-              // Check if the ideaID is a valid ObjectId
-              if (!isValidObjectId(ideaID)) {
-                console.log('Invalid ideaID:', ideaID);
-                return;
-              }
+    //         try {
+    //           if (!isValidObjectId(ideaID)) {
+    //             console.log('Invalid ideaID:', ideaID);
+    //             return;
+    //           }
       
-              const res = await this._ideasAPI.updateIdea(ideaID, editedIdea);
+    //           const res = await this._ideasAPI.updateIdea(ideaID, editedIdea);
       
-              const updatedIdea = res.data.data;
-              this._ideas = this._ideas.map((idea) => (idea._id === ideaID ? updatedIdea : idea));
+    //           const updatedIdea = res.data.data;
+    //           this._ideas = this._ideas.map((idea) => (idea._id === ideaID ? updatedIdea : idea));
       
-              this.render();
-            } catch (error) {
-              console.log('Error while updating the idea:', error);
-              alert('Error while updating the idea. Please try again later.');
-            }
-          });
-        } catch (error) {
-          console.log('Error while editing the idea:', error);
-        }
-      }
+    //           this.render();
+    //         } catch (error) {
+    //           console.log('Error while updating the idea:', error);
+    //           alert('Error while updating the idea. Please try again later.');
+    //         }
+    //       });
+    //     } catch (error) {
+    //       console.log('Error while editing the idea:', error);
+    //     }
+    //   }
       
 	addIdeatoList(idea) {
 		this._ideas.push(idea);
