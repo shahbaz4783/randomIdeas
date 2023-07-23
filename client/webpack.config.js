@@ -41,12 +41,10 @@ module.exports = {
       },
     ],
   },
-  optimization: {
-    minimizer: [
-      // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
-      // `...`,
-      new CssMinimizerPlugin(),
-    ],
+  performance: {
+    maxAssetSize: 500000, // 500kb
+    maxEntrypointSize: 500000, // 500kb
+    hints: "warning", // 'error' or false are other valid values
   },
   plugins: [
     new HtmlWebpackPlugin({
