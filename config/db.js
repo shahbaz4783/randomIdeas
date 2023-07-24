@@ -1,10 +1,15 @@
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
+ 
 const connetDB = async () => {
-    const conn = await mongoose.connect(process.env.MONGO_URI)
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`MongoDB connected: ${conn.connection.host}`);
-}
-
-mongoose.set('strictQuery', true)
-
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+ 
+mongoose.set("strictQuery", true);
+ 
 module.exports = connetDB;
